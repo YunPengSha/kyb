@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.SubjectMapper">
+    <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.SubjectDo">
+        <id column="subject_id" property="subjectId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="research_title" property="researchTitle" jdbcType="VARCHAR"/>
+        <result column="research_objective" property="researchObjective" jdbcType="VARCHAR"/>
+        <result column="research_drug" property="researchDrug" jdbcType="VARCHAR"/>
+        <result column="region" property="region" jdbcType="VARCHAR"/>
+        <result column="part_in_level" property="partInLevel" jdbcType="VARCHAR"/>
+        <result column="min_case_require" property="minCaseRequire" jdbcType="INTEGER"/>
+        <result column="part_in_field" property="partInField" jdbcType="VARCHAR"/>
+        <result column="case_completeness" property="caseCompleteness" jdbcType="VARCHAR"/>
+        <result column="public_status" property="publicStatus" jdbcType="INTEGER"/>
+        <result column="subject_nature" property="subjectNature" jdbcType="CHAR"/>
+        <result column="subject_status" property="subjectStatus" jdbcType="CHAR"/>
+        <result column="brochure_url" property="brochureUrl" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    subject_id, user_id, research_title, research_objective, research_drug, region, part_in_level, 
+    min_case_require, part_in_field, case_completeness,public_status,subject_nature, subject_status,brochure_url
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from subject
+        where subject_id = #{subjectId,jdbcType=INTEGER}
+    </select>
+
+    <!--获取课题列表 userId!=0查询用户的课题,==0获取公开发布的课题-->
+    <select id="getPages" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from subject
+        <where>
+            <if test="userId > 0">
+                and user_id = #{userId}
+            </if>
+            <if test="userId == -1">
+                and public_status = 0
+            </if>
+            <if test="userId == 0">
+                and public_status = 0 and user_id = 0
+            </if>
+            <if test="subjectNature != null">
+                and subject_nature = #{subjectNature}
+            </if>
+            <if test="subjectStatus != null">
+                and subject_status = #{subjectStatus}
+            </if>
+            <if test="searchKey != null">
+                and (UPPER(research_title) like UPPER(CONCAT('%',#{searchKey},'%' )) or UPPER(research_objective) like
+                UPPER(CONCAT('%',#{searchKey},'%' )))
+            </if>
+        </where>
+        Order by subject_id DESC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+
+    <!--获取课题数 userId!=0查询用户的课题,==0获取公开发布的课题-->
+    <select id="getCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select
+        count(subject_id)
+        from subject
+        <where>
+            <if test="userId > 0">
+                and user_id = #{userId}
+            </if>
+            <if test="userId == -1">
+                and public_status = 0
+            </if>
+            <if test="userId == 0">
+                and public_status = 0 and user_id = 0
+            </if>
+            <if test="subjectNature != null">
+                and subject_nature = #{subjectNature}
+            </if>
+            <if test="subjectStatus != null">
+                and subject_status = #{subjectStatus}
+            </if>
+            <if test="searchKey != null">
+                and (UPPER(research_title) like UPPER(CONCAT('%',#{searchKey},'%' )) or UPPER(research_objective) like
+                UPPER(CONCAT('%',#{searchKey},'%' )))
+            </if>
+        </where>
+    </select>
+
+    <!--获取用户的课题   包含自己创建的和参加的-->
+    <select id="getUserPages" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        distinct(s.subject_id),s.*
+        from subject s,subject_part_in spi
+        <where>
+            (s.user_id = #{userId}
+            or
+                (spi.user_id = #{userId}
+                and spi.subject_part_in_status = 'AGREE'
+                and spi.subject_id = s.subject_id
+                )
+            )
+
+        </where>
+        Order by subject_id DESC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+    <select id="getUserCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select
+       count(distinct s.subject_id)
+        from subject s,subject_part_in spi
+        <where>
+            (s.user_id = #{userId}
+            or
+                (
+                spi.user_id = #{userId}
+                and  spi.subject_part_in_status = 'AGREE'
+                and spi.subject_id = s.subject_id
+                )
+            )
+        </where>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from subject
+    where subject_id = #{subjectId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.SubjectDo" useGeneratedKeys="true"
+            keyProperty="subjectId">
+    insert into subject (user_id, research_title,
+      research_objective, research_drug, region, 
+      part_in_level, min_case_require, part_in_field, 
+      case_completeness, public_status,subject_nature,subject_status,brochure_url)
+    values (#{userId,jdbcType=INTEGER}, #{researchTitle,jdbcType=VARCHAR},
+      #{researchObjective,jdbcType=VARCHAR}, #{researchDrug,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{partInLevel,jdbcType=VARCHAR}, #{minCaseRequire,jdbcType=INTEGER}, #{partInField,jdbcType=VARCHAR}, 
+      #{caseCompleteness,jdbcType=VARCHAR}, #{publicStatus,jdbcType=INTEGER},#{subjectNature,jdbcType=CHAR}, #{subjectStatus,jdbcType=CHAR},#{brochureUrl,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectDo" useGeneratedKeys="true"
+            keyProperty="subjectId">
+        insert into subject
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="researchTitle != null">
+                research_title,
+            </if>
+            <if test="researchObjective != null">
+                research_objective,
+            </if>
+            <if test="researchDrug != null">
+                research_drug,
+            </if>
+            <if test="region != null">
+                region,
+            </if>
+            <if test="partInLevel != null">
+                part_in_level,
+            </if>
+            <if test="minCaseRequire != null">
+                min_case_require,
+            </if>
+            <if test="partInField != null">
+                part_in_field,
+            </if>
+            <if test="caseCompleteness != null">
+                case_completeness,
+            </if>
+            <if test="caseCompleteness != null">
+                case_completeness,
+            </if>
+            <if test="publicStatus != null">
+                public_status,
+            </if>
+            <if test="subjectNature != null">
+                subject_nature,
+            </if>
+            <if test="subjectStatus != null">
+                subject_status,
+            </if>
+            <if test="brochureUrl != null">
+                brochure_url,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="researchTitle != null">
+                #{researchTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="researchObjective != null">
+                #{researchObjective,jdbcType=VARCHAR},
+            </if>
+            <if test="researchDrug != null">
+                #{researchDrug,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null">
+                #{region,jdbcType=VARCHAR},
+            </if>
+            <if test="partInLevel != null">
+                #{partInLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="minCaseRequire != null">
+                #{minCaseRequire,jdbcType=INTEGER},
+            </if>
+            <if test="partInField != null">
+                #{partInField,jdbcType=VARCHAR},
+            </if>
+            <if test="caseCompleteness != null">
+                #{caseCompleteness,jdbcType=VARCHAR},
+            </if>
+            <if test="public_status != null">
+                #{publicStatus,jdbcType=INTEGER},
+            </if>
+            <if test="subjectNature != null">
+                #{subjectNature,jdbcType=CHAR},
+            </if>
+            <if test="subjectStatus != null">
+                #{subjectStatus,jdbcType=CHAR},
+            </if>
+            <if test="brochureUrl != null">
+                #{brochureUrl,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectDo">
+        update subject
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="researchTitle != null">
+                research_title = #{researchTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="researchObjective != null">
+                research_objective = #{researchObjective,jdbcType=VARCHAR},
+            </if>
+            <if test="researchDrug != null">
+                research_drug = #{researchDrug,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null">
+                region = #{region,jdbcType=VARCHAR},
+            </if>
+            <if test="partInLevel != null">
+                part_in_level = #{partInLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="minCaseRequire != null">
+                min_case_require = #{minCaseRequire,jdbcType=INTEGER},
+            </if>
+            <if test="partInField != null">
+                part_in_field = #{partInField,jdbcType=VARCHAR},
+            </if>
+            <if test="caseCompleteness != null">
+                case_completeness = #{caseCompleteness,jdbcType=VARCHAR},
+            </if>
+            <if test="publicStatus != null">
+                public_status = #{publicStatus,jdbcType=INTEGER},
+            </if>
+            <if test="subjectNature != null">
+                subject_nature = #{subjectNature,jdbcType=CHAR},
+            </if>
+            <if test="subjectStatus != null">
+                subject_status = #{subjectStatus,jdbcType=CHAR},
+            </if>
+            <if test="brochureUrl != null">
+                brochure_url = #{brochureUrl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where subject_id = #{subjectId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.SubjectDo">
+    update subject
+    set user_id = #{userId,jdbcType=INTEGER},
+      research_title = #{researchTitle,jdbcType=VARCHAR},
+      research_objective = #{researchObjective,jdbcType=VARCHAR},
+      research_drug = #{researchDrug,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      part_in_level = #{partInLevel,jdbcType=VARCHAR},
+      min_case_require = #{minCaseRequire,jdbcType=INTEGER},
+      part_in_field = #{partInField,jdbcType=VARCHAR},
+      case_completeness = #{caseCompleteness,jdbcType=VARCHAR},
+      public_status = #{publicStatus,jdbcType=INTEGER},
+      subject_nature = #{subjectNature,jdbcType=CHAR},
+      subject_status = #{subjectStatus,jdbcType=CHAR},
+      brochure_url = #{brochureUrl,jdbcType=VARCHAR}
+    where subject_id = #{subjectId,jdbcType=INTEGER}
+  </update>
+
+    <select id="getAuditList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from subject where subject_status = "AUDIT"
+        Order by subject_id ASC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+    <!--('CREATE', 'AUDIT', 'AUDIT_FAIL', 'PUBLISH','WAIT_PRICE', 'HAVE_PRICE', 'PRICE_AGREE', 'PRICE_REFUSE', 'COMPLETE', 'DELETED')-->
+    <select id="getPassList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from subject where subject_status = "COMPLETE" or subject_status = "PUBLISH" or subject_status = "WAIT_PRICE" or subject_status = "HAVE_PRICE"
+        or subject_status = "PRICE_AGREE" or subject_status = "PRICE_REFUSE" or subject_status = "WAIT_CHECK" or subject_status = "HAVE_CHECK"
+        Order by subject_id ASC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+    <select id="getPassListCount" resultType="Integer">
+        select
+        count(subject_id)
+        from subject where subject_status = "COMPLETE" or subject_status = "PUBLISH" or subject_status = "WAIT_PRICE" or subject_status = "HAVE_PRICE"
+        or subject_status = "PRICE_AGREE" or subject_status = "PRICE_REFUSE" or subject_status = "WAIT_CHECK" or subject_status = "HAVE_CHECK"
+    </select>
+
+    <select id="getFailList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from subject where subject_status = "AUDIT_FAIL"
+        Order by subject_id ASC
+        LIMIT #{offSet},#{rows}
+    </select>
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.SubjectMessageMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.SubjectMessageDo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="subject_message_type" property="subjectMessageType" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, subject_id, user_id,subject_name, message, subject_message_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from subject_message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getMessageBySubjectId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from subject_message
+    where subject_id = #{subjectId,jdbcType=INTEGER} and  subject_message_type = 'AUDIT_FAIL'
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from subject_message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.SubjectMessageDo" useGeneratedKeys="true" keyProperty="id" >
+    insert into subject_message ( subject_id, user_id,subject_name,
+      message, subject_message_type)
+    values ( #{subjectId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},#{subjectName,jdbcType=VARCHAR},
+      #{message,jdbcType=VARCHAR}, #{subjectMessageType,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectMessageDo" >
+    insert into subject_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+
+      <if test="subjectId != null" >
+        subject_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+
+      <if test="subjectName != null" >
+        subject_name,
+      </if>
+      <if test="message != null" >
+        message,
+      </if>
+      <if test="subjectMessageType != null" >
+        subject_message_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+
+      <if test="subjectId != null" >
+        #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectName != null" >
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectMessageType != null" >
+        #{subjectMessageType,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectMessageDo" >
+    update subject_message
+    <set >
+      <if test="subjectId != null" >
+        subject_id = #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectName != null" >
+        subject_name = #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        message = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectMessageType != null" >
+        subject_message_type = #{subjectMessageType,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.SubjectMessageDo" >
+    update subject_message
+    set subject_id = #{subjectId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      subject_name = #{subjectName,jdbcType=VARCHAR},
+      message = #{message,jdbcType=VARCHAR},
+      subject_message_type = #{subjectMessageType,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

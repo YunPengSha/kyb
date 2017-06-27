@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.UserDo" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="INTEGER" />
+    <result column="user_type" property="userType" jdbcType="CHAR" />
+    <result column="user_status" property="userStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="UserDoctorResultMap" type="net.sinyoo.cooperation.service.domain.query.UserDoctorQueryDo" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="INTEGER" />
+    <result column="user_type" property="userType" jdbcType="CHAR" />
+    <result column="user_status" property="userStatus" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="personal_honor" property="personalHonor" jdbcType="VARCHAR" />
+    <result column="hospital" property="hospital" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="clinical_field" property="clinicalField" jdbcType="VARCHAR" />
+    <result column="number_of_beds" property="numberOfBeds" jdbcType="INTEGER" />
+    <result column="case_number" property="caseNumber" jdbcType="INTEGER" />
+    <result column="case_distribution" property="caseDistribution" jdbcType="VARCHAR" />
+    <result column="gene_detection_ratio" property="geneDetectionRatio" jdbcType="INTEGER" />
+    <result column="office_telephone" property="officeTelephone" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    user_id, phone, password, user_name,image_url, gender, user_type, user_status, create_time,
+    modify_time
+  </sql>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="searchUserDoctorList" resultMap="UserDoctorResultMap" parameterType="java.util.HashMap" >
+    select
+    u.*,uid.title, uid.personal_honor, uid.hospital, uid.department,
+    uid.clinical_field, uid.number_of_beds, uid.case_number, uid.case_distribution, uid.gene_detection_ratio,uid.office_telephone
+    from user u,user_info_doctor uid
+    <where>
+      u.user_id = uid.user_id
+      <if test="searchKey != null">
+        and ( UPPER(u.user_name) like UPPER(CONCAT('%',#{searchKey},'%' )) )
+      </if>
+    </where>
+    limit 0,20
+  </select>
+
+  <select id="searchDoctorListLikeNameOrHospital" resultMap="UserDoctorResultMap" parameterType="java.util.HashMap" >
+    select
+    u.*,uid.title, uid.personal_honor, uid.hospital, uid.department,
+    uid.clinical_field, uid.number_of_beds, uid.case_number, uid.case_distribution, uid.gene_detection_ratio,uid.office_telephone
+    from user u,user_info_doctor uid
+    <where>
+      u.user_id = uid.user_id AND password != ''
+      <if test="searchKey != null">
+        and (( UPPER(u.user_name) like UPPER(CONCAT('%',#{searchKey},'%' )) ) OR ( UPPER(uid.hospital) like UPPER(CONCAT('%',#{searchKey},'%' )) ))
+      </if>
+    </where>
+    LIMIT #{offSet},#{rows}
+  </select>
+
+  <select id="getSearchDoctorListCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(u.user_id)
+    from user u,user_info_doctor uid
+    <where>
+      u.user_id = uid.user_id
+      <if test="searchKey != null">
+        and (( UPPER(u.user_name) like UPPER(CONCAT('%',#{searchKey},'%' )) ) OR ( UPPER(uid.hospital) like UPPER(CONCAT('%',#{searchKey},'%' )) ))
+      </if>
+    </where>
+  </select>
+
+  <select id="searchAllUserList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+      (user_type = 'DEPARTMENT' or user_type = 'DOCTOR')
+      <if test="searchKey != null">
+        and ( UPPER(user_name) like UPPER(CONCAT('%',#{searchKey},'%' )) )
+      </if>
+    </where>
+    limit 0,20
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.UserDo" useGeneratedKeys="true" keyProperty="userId" >
+    insert into user ( phone, password,
+      user_name,image_url, gender, user_type,
+      user_status, create_time, modify_time
+      )
+    values ( #{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{userName,jdbcType=VARCHAR},#{imageUrl,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{userType,jdbcType=CHAR},
+      #{userStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="userId" parameterType="net.sinyoo.cooperation.service.domain.UserDo" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="imageUrl != null" >
+        image_url,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="userType != null" >
+        user_type,
+      </if>
+      <if test="userStatus != null" >
+        user_status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null" >
+        #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userType != null" >
+        #{userType,jdbcType=CHAR},
+      </if>
+      <if test="userStatus != null" >
+        #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.UserDo" >
+    update user
+    <set >
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="imageUrl != null" >
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userType != null" >
+        user_type = #{userType,jdbcType=CHAR},
+      </if>
+      <if test="userStatus != null" >
+        user_status = #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.UserDo" >
+    update user
+    set phone = #{phone,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      image_url = #{imageUrl,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=INTEGER},
+      user_type = #{userType,jdbcType=CHAR},
+      user_status = #{userStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where phone = #{phone,jdbcType=VARCHAR}
+    limit 0,1
+  </select>
+
+
+  <select id="getUserList" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_type = #{userType} and password != ''
+    LIMIT #{offSet},#{rows}
+  </select>
+
+  <select id="selectByPhoneAndType" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where phone = #{userName,jdbcType=VARCHAR} AND user_type = #{userType,jdbcType=VARCHAR}
+    limit 0,1
+  </select>
+
+  <select id="findAdminByName" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_name = #{userName,jdbcType=VARCHAR} AND password = #{password,jdbcType=VARCHAR} AND user_type = "ADMIN" AND user_status = 0
+    limit 0,1
+  </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.CrfMapper" >
+    <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.CrfDo" >
+        <id column="crf_id" property="crfId" jdbcType="INTEGER" />
+        <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+        <result column="crf_down_url" property="crfDownUrl" jdbcType="VARCHAR" />
+        <result column="price" property="price" jdbcType="DOUBLE" />
+        <result column="crf_status" property="crfStatus" jdbcType="CHAR" />
+        <result column="agree_time" property="agreeTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+    crf_id, subject_id, crf_down_url, price, crf_status, agree_time
+  </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from crf
+        where crf_id = #{crfId,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from crf
+        where crf_id = #{crfId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.CrfDo" useGeneratedKeys="true" keyProperty="crf_id" >
+        insert into crf (subject_id, crf_down_url,
+        price, crf_status, agree_time
+        )
+        values (#{subjectId,jdbcType=INTEGER}, #{crfDownUrl,jdbcType=VARCHAR},
+        #{price,jdbcType=INTEGER}, #{crfStatus,jdbcType=CHAR}, #{agreeTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.CrfDo"  useGeneratedKeys="true" keyProperty="crf_id" >
+        insert into crf
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+
+            <if test="subjectId != null" >
+                subject_id,
+            </if>
+            <if test="crfDownUrl != null" >
+                crf_down_url,
+            </if>
+            <if test="price != null" >
+                price,
+            </if>
+            <if test="crfStatus != null" >
+                crf_status,
+            </if>
+            <if test="agreeTime != null" >
+                agree_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+
+            <if test="subjectId != null" >
+                #{subjectId,jdbcType=INTEGER},
+            </if>
+            <if test="crfDownUrl != null" >
+                #{crfDownUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                #{price,jdbcType=INTEGER},
+            </if>
+            <if test="crfStatus != null" >
+                #{crfStatus,jdbcType=CHAR},
+            </if>
+            <if test="agreeTime != null" >
+                #{agreeTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getWaitPriceList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from crf where crf_status = "WAIT_PRICE"
+        Order by crf_id DESC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+    <select id="getHavePriceList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from crf where crf_status = "HAVE_PRICE"
+        Order by crf_id DESC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+    <select id="getAgreePriceList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from crf where crf_status = "PRICE_AGREE"
+        Order by crf_id DESC
+        LIMIT #{offSet},#{rows}
+    </select>
+
+    <update id="addAgreeTime" parameterType="java.util.HashMap">
+        update crf set agree_time = #{agreeTime,jdbcType=TIMESTAMP} where subject_id = #{subjectId,jdbcType=INTEGER}
+    </update>
+
+</mapper>

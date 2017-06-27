@@ -1,0 +1,159 @@
+
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`user` (
+  `user_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '用户表',
+  `phone` VARCHAR(11) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '注册的手机号',
+  `password` VARCHAR(32) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '',
+  `user_name` VARCHAR(40) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '',
+  `gender` INT(1) NULL DEFAULT NULL COMMENT '0-男 1-女',
+  `user_type` ENUM('DOCTOR') CHARACTER SET 'utf8mb4' NULL DEFAULT 'DOCTOR' NULL COMMENT '用户类别',
+  `user_status` INT(1) NULL DEFAULT NULL COMMENT '0-正常',
+  `create_time` DATETIME NULL DEFAULT NULL COMMENT '',
+  `modify_time` DATETIME NULL DEFAULT NULL COMMENT '',
+  PRIMARY KEY (`user_id`)  COMMENT '')
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = '用户表';
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`user_info_doctor` (
+  `doctor_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '自增长主键',
+  `user_id` INT(10) UNSIGNED NOT NULL COMMENT '用户id',
+  `title` VARCHAR(64) NULL DEFAULT NULL COMMENT '职称',
+  `personal_honor` VARCHAR(128) NULL DEFAULT NULL COMMENT '个人荣誉，如**会长',
+  `hospital` VARCHAR(128) NULL DEFAULT NULL COMMENT '所属医院',
+  `outpatient_time` VARCHAR(128) NULL DEFAULT NULL COMMENT '门诊时间',
+  `department` VARCHAR(40) NULL DEFAULT NULL COMMENT '科室',
+  `clinical_field` VARCHAR(80) NULL DEFAULT NULL COMMENT '临床领域',
+  `number_of_beds` INT(6) NULL DEFAULT NULL COMMENT '病床数',
+  `case_number` INT(6) NULL DEFAULT NULL COMMENT '病例数',
+  `case_distribution` VARCHAR(100) NULL DEFAULT NULL COMMENT '病例病种分布',
+  `gene_detection_ratio` VARCHAR(10) NULL DEFAULT NULL COMMENT '基因检测占比',
+  PRIMARY KEY (`doctor_id`)  COMMENT '',
+  CONSTRAINT `fk_user_id`
+    FOREIGN KEY (`doctor_id`)
+    REFERENCES `data_share`.`user` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = '医生信息表';
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`subject` (
+  `subject_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '课题编号',
+  `user_id` INT(10) UNSIGNED NOT NULL COMMENT '用户id',
+  `research_title` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '研究标题',
+  `research_objective` VARCHAR(1024) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '研究目的',
+  `research_drug` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '研究药物',
+  `region` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '区域',
+  `part_in_level` VARCHAR(100) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '参与级别',
+  `min_case_require` INT(11) NULL DEFAULT NULL COMMENT '最低样本数要求',
+  `part_in_field` VARCHAR(100) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '参与者领域',
+  `case_completeness` VARCHAR(20) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '病例完整度',
+  `subject_status` ENUM('CREATE','AUDIT','PUBLISH','COMPLETE','DELETED') CHARACTER SET 'utf8mb4' NULL DEFAULT 'CREATE' NULL COMMENT '课题状态',
+  PRIMARY KEY (`subject_id`)  COMMENT '')
+
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = '课题详情';
+
+
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`subject_standard` (
+  `subject_standard_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '课题加入标准',
+  `subject_id` INT(11) NULL DEFAULT NULL COMMENT '课题编号',
+  `content` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '内容',
+  `subject_standard_type` ENUM('EXCLUDE','INCLUDE') CHARACTER SET 'utf8mb4' NULL DEFAULT 'INCLUDE' NULL COMMENT '课题类型',
+  PRIMARY KEY (`subject_standard_id`)  COMMENT '',
+  CONSTRAINT `fk_subject_id`
+    FOREIGN KEY (`subject_id`)
+    REFERENCES `data_share`.`subject` (`subject_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = '病例收集标准';
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`subject_part_in` (
+  `part_in_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` INT(11) NULL DEFAULT 0 COMMENT '课题参与人',
+  `subject_id` INT(11) NOT NULL COMMENT '课题编号',
+  `subject_name` VARCHAR(100) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '课题名称',
+  `subject_user_id` INT(11) NULL DEFAULT NULL COMMENT '创建课题人编号',
+  `case_number_share` INT(11) NULL DEFAULT NULL COMMENT '贡献病例数',
+  `subject_part_in_status` ENUM('PENDING','AGREE','DISAGREE') CHARACTER SET 'utf8mb4' NULL DEFAULT 'PENDING' NULL COMMENT '参与状态',
+  `subject_part_in_type` ENUM('INVITATION','APPLY') CHARACTER SET 'utf8mb4' NULL DEFAULT 'INVITATION' NULL COMMENT '参与类别',
+  `create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`part_in_id`)  COMMENT '',
+  CONSTRAINT `fk_part_id_subject_id`
+    FOREIGN KEY (`subject_id`)
+    REFERENCES `data_share`.`subject` (`subject_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = '参与者_医生';
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`home_link` (
+  `link_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '显示内容',
+  `image_url` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '显示图片地址',
+  `link_url` VARCHAR(256) CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT '跳转地址',
+  `ref_id` INT(11) NOT NULL DEFAULT 0 COMMENT '外键编号',
+  `link_type` ENUM('BANNER','DOCTOR','DRUG_COMPANY') CHARACTER SET 'utf8mb4' NULL DEFAULT 'BANNER' NULL COMMENT '参与状态',
+  `sort_number` INT(11) NOT NULL DEFAULT 0 COMMENT '排序列0在最前',
+  `create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`link_id`) COMMENT '')
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = '首页链接';
+
+
+
+CREATE TABLE IF NOT EXISTS `data_share`.`crf` (
+  `crf_id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '',
+  `subject_id` INT(11) NULL DEFAULT NULL COMMENT '',
+  `price` INT(11) NULL DEFAULT NULL COMMENT '',
+  `crf_status` INT(11) NULL DEFAULT NULL COMMENT '',
+  PRIMARY KEY (`crf_id`)  COMMENT '')
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COMMENT = 'crf信息'
+
+
+CREATE TABLE `data_share`.`sms_code` (
+  `sms_code_id` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `ref_id` INT NULL COMMENT '外部主键，   如是sms_code_type是REGISTER_CODE ， 则为用户编号',
+  `sms_code` VARCHAR(16) NULL COMMENT '验证码',
+  `sms_code_type` ENUM('REGISTER_CODE') NOT NULL DEFAULT 'REGISTER_CODE' COMMENT '验证码类型',
+  `expire_time` BIGINT(16) NULL COMMENT '',
+  `sms_code_status` INT(1) NOT NULL DEFAULT 0 COMMENT '0-正常  1-失效',
+  PRIMARY KEY (`sms_code_id`)  COMMENT '短信验证码');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

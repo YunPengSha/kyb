@@ -1,0 +1,29 @@
+#2017-03-16 修改
+#添加subject_status字段枚举值
+ALTER TABLE `data_share`.`subject`
+CHANGE COLUMN `subject_status` `subject_status` ENUM('CREATE', 'AUDIT', 'AUDIT_FAIL', 'PUBLISH', 'COMPLETE', 'DELETED') NOT NULL DEFAULT 'CREATE' COMMENT '课题状态' ;
+
+#修改user_id长度
+ALTER TABLE `data_share`.`user_info_doctor`
+CHANGE COLUMN `user_id` `user_id` INT(11) UNSIGNED NOT NULL COMMENT '用户id' ;
+#修改user_id长度
+ALTER TABLE `data_share`.`subject`
+CHANGE COLUMN `user_id` `user_id` INT(11) UNSIGNED NOT NULL COMMENT '用户id' ;
+
+#病例表设置是否公开
+ALTER TABLE `data_share`.`subject`
+ADD COLUMN `public` INT(1) NOT NULL DEFAULT 0 COMMENT '0-公开  1-不公开' AFTER `subject_status`;
+
+ALTER TABLE `data_share`.`subject`
+CHANGE COLUMN `public` `public_status` INT(1) NOT NULL DEFAULT '0' COMMENT '0-公开  1-不公开' AFTER `case_completeness`;
+
+
+
+
+#用户表添加头像地址
+ALTER TABLE `data_share`.`user`
+ADD COLUMN `image_url` VARCHAR(256) NULL COMMENT '用户头像地址' AFTER `user_name`;
+
+#研究课题表添加课题性质
+ALTER TABLE `data_share`.`subject`
+ADD COLUMN `subject_nature` ENUM('OBSERVE', 'FORWARD', 'RETROSPECTIVE', 'REGISTRATION') NOT NULL DEFAULT 'OBSERVE' COMMENT '课题性质' AFTER `public_status`;

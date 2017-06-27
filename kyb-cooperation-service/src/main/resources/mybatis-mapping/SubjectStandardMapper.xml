@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.SubjectStandardMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.SubjectStandardDo" >
+    <id column="subject_standard_id" property="subjectStandardId" jdbcType="INTEGER" />
+    <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="subject_standard_type" property="subjectStandardType" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    subject_standard_id, subject_id, content, subject_standard_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from subject_standard
+    where subject_standard_id = #{subjectStandardId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from subject_standard
+    where subject_standard_id = #{subjectStandardId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.SubjectStandardDo" >
+    insert into subject_standard (subject_standard_id, subject_id, content, 
+      subject_standard_type)
+    values (#{subjectStandardId,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{subjectStandardType,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectStandardDo" >
+    insert into subject_standard
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="subjectStandardId != null" >
+        subject_standard_id,
+      </if>
+      <if test="subjectId != null" >
+        subject_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="subjectStandardType != null" >
+        subject_standard_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="subjectStandardId != null" >
+        #{subjectStandardId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null" >
+        #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectStandardType != null" >
+        #{subjectStandardType,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectStandardDo" >
+    update subject_standard
+    <set >
+      <if test="subjectId != null" >
+        subject_id = #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectStandardType != null" >
+        subject_standard_type = #{subjectStandardType,jdbcType=CHAR},
+      </if>
+    </set>
+    where subject_standard_id = #{subjectStandardId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.SubjectStandardDo" >
+    update subject_standard
+    set subject_id = #{subjectId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      subject_standard_type = #{subjectStandardType,jdbcType=CHAR}
+    where subject_standard_id = #{subjectStandardId,jdbcType=INTEGER}
+  </update>
+</mapper>

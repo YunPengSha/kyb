@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.SubjectPartInMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.SubjectPartInDo" >
+    <id column="part_in_id" property="partInId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="subject_user_id" property="subjectUserId" jdbcType="INTEGER" />
+    <result column="case_number_share" property="caseNumberShare" jdbcType="INTEGER" />
+    <result column="subject_part_in_status" property="subjectPartInStatus" jdbcType="CHAR" />
+    <result column="subject_part_in_type" property="subjectPartInType" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    part_in_id, user_id, subject_id, subject_name, subject_user_id, case_number_share, 
+    subject_part_in_status, subject_part_in_type, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select 
+    <include refid="Base_Column_List" />
+    from subject_part_in
+    where part_in_id = #{partInId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from subject_part_in
+    where part_in_id = #{partInId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.SubjectPartInDo" useGeneratedKeys="true" keyProperty="partInId">
+    insert into subject_part_in (user_id, subject_id,
+      subject_name, subject_user_id, case_number_share, 
+      subject_part_in_status, subject_part_in_type, create_time
+      )
+    values (#{userId,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER},
+      #{subjectName,jdbcType=VARCHAR}, #{subjectUserId,jdbcType=INTEGER}, #{caseNumberShare,jdbcType=INTEGER}, 
+      #{subjectPartInStatus,jdbcType=CHAR}, #{subjectPartInType,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectPartInDo" useGeneratedKeys="true" keyProperty="partInId">
+    insert into subject_part_in
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="subjectId != null" >
+        subject_id,
+      </if>
+      <if test="subjectName != null" >
+        subject_name,
+      </if>
+      <if test="subjectUserId != null" >
+        subject_user_id,
+      </if>
+      <if test="caseNumberShare != null" >
+        case_number_share,
+      </if>
+      <if test="subjectPartInStatus != null" >
+        subject_part_in_status,
+      </if>
+      <if test="subjectPartInType != null" >
+        subject_part_in_type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null" >
+        #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectName != null" >
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectUserId != null" >
+        #{subjectUserId,jdbcType=INTEGER},
+      </if>
+      <if test="caseNumberShare != null" >
+        #{caseNumberShare,jdbcType=INTEGER},
+      </if>
+      <if test="subjectPartInStatus != null" >
+        #{subjectPartInStatus,jdbcType=CHAR},
+      </if>
+      <if test="subjectPartInType != null" >
+        #{subjectPartInType,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.SubjectPartInDo" >
+    update subject_part_in
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null" >
+        subject_id = #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectName != null" >
+        subject_name = #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectUserId != null" >
+        subject_user_id = #{subjectUserId,jdbcType=INTEGER},
+      </if>
+      <if test="caseNumberShare != null" >
+        case_number_share = #{caseNumberShare,jdbcType=INTEGER},
+      </if>
+      <if test="subjectPartInStatus != null" >
+        subject_part_in_status = #{subjectPartInStatus,jdbcType=CHAR},
+      </if>
+      <if test="subjectPartInType != null" >
+        subject_part_in_type = #{subjectPartInType,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where part_in_id = #{partInId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.SubjectPartInDo" >
+    update subject_part_in
+    set user_id = #{userId,jdbcType=INTEGER},
+      subject_id = #{subjectId,jdbcType=INTEGER},
+      subject_name = #{subjectName,jdbcType=VARCHAR},
+      subject_user_id = #{subjectUserId,jdbcType=INTEGER},
+      case_number_share = #{caseNumberShare,jdbcType=INTEGER},
+      subject_part_in_status = #{subjectPartInStatus,jdbcType=CHAR},
+      subject_part_in_type = #{subjectPartInType,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where part_in_id = #{partInId,jdbcType=INTEGER}
+  </update>
+
+  <select id="getInvocationPages" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List"/>
+    from subject_part_in where
+    user_id = #{userId ,jdbcType=INTEGER }
+    AND subject_part_in_type = "INVITATION"
+    Order by part_in_id DESC
+    LIMIT #{offSet},#{rows}
+  </select>
+
+  <select id="getApplyPages" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List"/>
+    from subject_part_in where subject_user_id = #{subjectUserId ,jdbcType=INTEGER }
+    AND subject_part_in_type = "APPLY"
+    Order by part_in_id DESC
+    LIMIT #{offSet},#{rows}
+  </select>
+
+
+  <select id="getAgreePages" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List"/>
+    from subject_part_in where
+    subject_id = #{subjectId ,jdbcType=INTEGER }
+    AND subject_part_in_status = "AGREE"
+    Order by part_in_id DESC
+    LIMIT #{offSet},#{rows}
+  </select>
+</mapper>

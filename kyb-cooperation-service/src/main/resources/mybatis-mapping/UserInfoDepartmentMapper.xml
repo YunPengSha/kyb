@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.UserInfoDepartmentMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.UserInfoDepartmentDo" >
+    <id column="department_id" property="departmentId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="hospital" property="hospital" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="chief_physician_number" property="chiefPhysicianNumber" jdbcType="INTEGER" />
+    <result column="deputy_chief_physician_number" property="deputyChiefPhysicianNumber" jdbcType="INTEGER" />
+    <result column="attending_doctor_number" property="attendingDoctorNumber" jdbcType="INTEGER" />
+    <result column="clinical_field" property="clinicalField" jdbcType="VARCHAR" />
+    <result column="department_details" property="departmentDetails" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    department_id, user_id, hospital, department, chief_physician_number, deputy_chief_physician_number, 
+    attending_doctor_number, clinical_field, department_details
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info_department
+    where department_id = #{departmentId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from user_info_department
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_info_department
+    where department_id = #{departmentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDepartmentDo" >
+    insert into user_info_department (department_id, user_id, hospital, 
+      department, chief_physician_number, deputy_chief_physician_number, 
+      attending_doctor_number, clinical_field, department_details
+      )
+    values (#{departmentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{hospital,jdbcType=VARCHAR}, 
+      #{department,jdbcType=VARCHAR}, #{chiefPhysicianNumber,jdbcType=INTEGER}, #{deputyChiefPhysicianNumber,jdbcType=INTEGER}, 
+      #{attendingDoctorNumber,jdbcType=INTEGER}, #{clinicalField,jdbcType=VARCHAR}, #{departmentDetails,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDepartmentDo" >
+    insert into user_info_department
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="hospital != null" >
+        hospital,
+      </if>
+      <if test="department != null" >
+        department,
+      </if>
+      <if test="chiefPhysicianNumber != null" >
+        chief_physician_number,
+      </if>
+      <if test="deputyChiefPhysicianNumber != null" >
+        deputy_chief_physician_number,
+      </if>
+      <if test="attendingDoctorNumber != null" >
+        attending_doctor_number,
+      </if>
+      <if test="clinicalField != null" >
+        clinical_field,
+      </if>
+      <if test="departmentDetails != null" >
+        department_details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="hospital != null" >
+        #{hospital,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="chiefPhysicianNumber != null" >
+        #{chiefPhysicianNumber,jdbcType=INTEGER},
+      </if>
+      <if test="deputyChiefPhysicianNumber != null" >
+        #{deputyChiefPhysicianNumber,jdbcType=INTEGER},
+      </if>
+      <if test="attendingDoctorNumber != null" >
+        #{attendingDoctorNumber,jdbcType=INTEGER},
+      </if>
+      <if test="clinicalField != null" >
+        #{clinicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentDetails != null" >
+        #{departmentDetails,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDepartmentDo" >
+    update user_info_department
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="hospital != null" >
+        hospital = #{hospital,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="chiefPhysicianNumber != null" >
+        chief_physician_number = #{chiefPhysicianNumber,jdbcType=INTEGER},
+      </if>
+      <if test="deputyChiefPhysicianNumber != null" >
+        deputy_chief_physician_number = #{deputyChiefPhysicianNumber,jdbcType=INTEGER},
+      </if>
+      <if test="attendingDoctorNumber != null" >
+        attending_doctor_number = #{attendingDoctorNumber,jdbcType=INTEGER},
+      </if>
+      <if test="clinicalField != null" >
+        clinical_field = #{clinicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentDetails != null" >
+        department_details = #{departmentDetails,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where department_id = #{departmentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDepartmentDo" >
+    update user_info_department
+    set user_id = #{userId,jdbcType=INTEGER},
+      hospital = #{hospital,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      chief_physician_number = #{chiefPhysicianNumber,jdbcType=INTEGER},
+      deputy_chief_physician_number = #{deputyChiefPhysicianNumber,jdbcType=INTEGER},
+      attending_doctor_number = #{attendingDoctorNumber,jdbcType=INTEGER},
+      clinical_field = #{clinicalField,jdbcType=VARCHAR},
+      department_details = #{departmentDetails,jdbcType=VARCHAR}
+    where department_id = #{departmentId,jdbcType=INTEGER}
+  </update>
+</mapper>

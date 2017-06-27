@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.SmsCodeMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.SmsCodeDo" >
+    <id column="sms_code_id" property="smsCodeId" jdbcType="INTEGER" />
+    <result column="ref_id" property="refId" jdbcType="INTEGER" />
+    <result column="sms_code" property="smsCode" jdbcType="VARCHAR" />
+    <result column="sms_code_type" property="smsCodeType" jdbcType="CHAR" />
+    <result column="expire_time" property="expireTime" jdbcType="BIGINT" />
+    <result column="sms_code_status" property="smsCodeStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sms_code_id, ref_id, sms_code, sms_code_type, expire_time, sms_code_status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sms_code
+    where sms_code_id = #{smsCodeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sms_code
+    where sms_code_id = #{smsCodeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.sinyoo.cooperation.service.domain.SmsCodeDo" >
+    insert into sms_code (sms_code_id, ref_id, sms_code, 
+      sms_code_type, expire_time, sms_code_status
+      )
+    values (#{smsCodeId,jdbcType=INTEGER}, #{refId,jdbcType=INTEGER}, #{smsCode,jdbcType=VARCHAR}, 
+      #{smsCodeType,jdbcType=CHAR}, #{expireTime,jdbcType=BIGINT}, #{smsCodeStatus,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.SmsCodeDo" >
+    insert into sms_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="smsCodeId != null" >
+        sms_code_id,
+      </if>
+      <if test="refId != null" >
+        ref_id,
+      </if>
+      <if test="smsCode != null" >
+        sms_code,
+      </if>
+      <if test="smsCodeType != null" >
+        sms_code_type,
+      </if>
+      <if test="expireTime != null" >
+        expire_time,
+      </if>
+      <if test="smsCodeStatus != null" >
+        sms_code_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="smsCodeId != null" >
+        #{smsCodeId,jdbcType=INTEGER},
+      </if>
+      <if test="refId != null" >
+        #{refId,jdbcType=INTEGER},
+      </if>
+      <if test="smsCode != null" >
+        #{smsCode,jdbcType=VARCHAR},
+      </if>
+      <if test="smsCodeType != null" >
+        #{smsCodeType,jdbcType=CHAR},
+      </if>
+      <if test="expireTime != null" >
+        #{expireTime,jdbcType=BIGINT},
+      </if>
+      <if test="smsCodeStatus != null" >
+        #{smsCodeStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.SmsCodeDo" >
+    update sms_code
+    <set >
+      <if test="refId != null" >
+        ref_id = #{refId,jdbcType=INTEGER},
+      </if>
+      <if test="smsCode != null" >
+        sms_code = #{smsCode,jdbcType=VARCHAR},
+      </if>
+      <if test="smsCodeType != null" >
+        sms_code_type = #{smsCodeType,jdbcType=CHAR},
+      </if>
+      <if test="expireTime != null" >
+        expire_time = #{expireTime,jdbcType=BIGINT},
+      </if>
+      <if test="smsCodeStatus != null" >
+        sms_code_status = #{smsCodeStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where sms_code_id = #{smsCodeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.SmsCodeDo" >
+    update sms_code
+    set ref_id = #{refId,jdbcType=INTEGER},
+      sms_code = #{smsCode,jdbcType=VARCHAR},
+      sms_code_type = #{smsCodeType,jdbcType=CHAR},
+      expire_time = #{expireTime,jdbcType=BIGINT},
+      sms_code_status = #{smsCodeStatus,jdbcType=INTEGER}
+    where sms_code_id = #{smsCodeId,jdbcType=INTEGER}
+  </update>
+  <!--
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from sms_code
+    where ref_id = #{userId,jdbcType=INTEGER}
+  </select>
+  -->
+</mapper>

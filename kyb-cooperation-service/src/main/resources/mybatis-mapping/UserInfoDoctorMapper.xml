@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.sinyoo.cooperation.service.mapper.UserInfoDoctorMapper" >
+  <resultMap id="BaseResultMap" type="net.sinyoo.cooperation.service.domain.UserInfoDoctorDo" >
+    <id column="doctor_id" property="doctorId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="personal_honor" property="personalHonor" jdbcType="VARCHAR" />
+    <result column="hospital" property="hospital" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="clinical_field" property="clinicalField" jdbcType="VARCHAR" />
+    <result column="number_of_beds" property="numberOfBeds" jdbcType="INTEGER" />
+    <result column="case_number" property="caseNumber" jdbcType="INTEGER" />
+    <result column="case_distribution" property="caseDistribution" jdbcType="VARCHAR" />
+    <result column="gene_detection_ratio" property="geneDetectionRatio" jdbcType="INTEGER" />
+    <result column="office_telephone" property="officeTelephone" jdbcType="VARCHAR" />
+    <result column="doctor_details" property="doctorDetails" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    doctor_id, user_id, title, personal_honor, hospital, department,
+    clinical_field, number_of_beds, case_number, case_distribution, gene_detection_ratio,office_telephone,doctor_details
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_info_doctor
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_info_doctor
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="doctor_id" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDoctorDo" >
+    insert into user_info_doctor (doctor_id, user_id, title, 
+      personal_honor, hospital,
+      department, clinical_field, number_of_beds, 
+      case_number, case_distribution, gene_detection_ratio,office_telephone,doctor_details
+      )
+    values (#{doctorId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{personalHonor,jdbcType=VARCHAR}, #{hospital,jdbcType=VARCHAR},
+      #{department,jdbcType=VARCHAR}, #{clinicalField,jdbcType=VARCHAR}, #{numberOfBeds,jdbcType=INTEGER}, 
+      #{caseNumber,jdbcType=INTEGER}, #{caseDistribution,jdbcType=VARCHAR}, #{geneDetectionRatio,jdbcType=INTEGER},
+      #{officeTelephone,jdbcType=VARCHAR},#{doctorDetails,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDoctorDo" >
+    insert into user_info_doctor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="doctorId != null" >
+        doctor_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="personalHonor != null" >
+        personal_honor,
+      </if>
+      <if test="hospital != null" >
+        hospital,
+      </if>
+      <if test="department != null" >
+        department,
+      </if>
+      <if test="clinicalField != null" >
+        clinical_field,
+      </if>
+      <if test="numberOfBeds != null" >
+        number_of_beds,
+      </if>
+      <if test="caseNumber != null" >
+        case_number,
+      </if>
+      <if test="caseDistribution != null" >
+        case_distribution,
+      </if>
+      <if test="geneDetectionRatio != null" >
+        gene_detection_ratio,
+      </if>
+      <if test="officeTelephone != null" >
+        office_telephone,
+      </if>
+      <if test="doctorDetails != null" >
+        doctor_details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="doctorId != null" >
+        #{doctorId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="personalHonor != null" >
+        #{personalHonor,jdbcType=VARCHAR},
+      </if>
+      <if test="hospital != null" >
+        #{hospital,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="clinicalField != null" >
+        #{clinicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="numberOfBeds != null" >
+        #{numberOfBeds,jdbcType=INTEGER},
+      </if>
+      <if test="caseNumber != null" >
+        #{caseNumber,jdbcType=INTEGER},
+      </if>
+      <if test="caseDistribution != null" >
+        #{caseDistribution,jdbcType=VARCHAR},
+      </if>
+      <if test="geneDetectionRatio != null" >
+        #{geneDetectionRatio,jdbcType=INTEGER},
+      </if>
+      <if test="officeTelephone != null" >
+        #{officeTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorDetails != null" >
+        #{doctorDetails,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDoctorDo" >
+    update user_info_doctor
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="personalHonor != null" >
+        personal_honor = #{personalHonor,jdbcType=VARCHAR},
+      </if>
+      <if test="hospital != null" >
+        hospital = #{hospital,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="clinicalField != null" >
+        clinical_field = #{clinicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="numberOfBeds != null" >
+        number_of_beds = #{numberOfBeds,jdbcType=INTEGER},
+      </if>
+      <if test="caseNumber != null" >
+        case_number = #{caseNumber,jdbcType=INTEGER},
+      </if>
+      <if test="caseDistribution != null" >
+        case_distribution = #{caseDistribution,jdbcType=VARCHAR},
+      </if>
+      <if test="geneDetectionRatio != null" >
+        gene_detection_ratio = #{geneDetectionRatio,jdbcType=INTEGER},
+      </if>
+      <if test="officeTelephone != null" >
+        office_telephone = #{officeTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorDetails != null" >
+        doctor_details = #{doctorDetails,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDoctorDo" >
+    update user_info_doctor
+    set user_id = #{userId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      personal_honor = #{personalHonor,jdbcType=VARCHAR},
+      hospital = #{hospital,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      clinical_field = #{clinicalField,jdbcType=VARCHAR},
+      number_of_beds = #{numberOfBeds,jdbcType=INTEGER},
+      case_number = #{caseNumber,jdbcType=INTEGER},
+      case_distribution = #{caseDistribution,jdbcType=VARCHAR},
+      gene_detection_ratio = #{geneDetectionRatio,jdbcType=INTEGER},
+      office_telephone = #{officeTelephone,jdbcType=VARCHAR}
+      doctor_details = #{doctorDetails,jdbcType=VARCHAR}
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByUserIdSelective" parameterType="net.sinyoo.cooperation.service.domain.UserInfoDoctorDo" >
+    update user_info_doctor
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="personalHonor != null" >
+        personal_honor = #{personalHonor,jdbcType=VARCHAR},
+      </if>
+      <if test="hospital != null" >
+        hospital = #{hospital,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="clinicalField != null" >
+        clinical_field = #{clinicalField,jdbcType=VARCHAR},
+      </if>
+      <if test="numberOfBeds != null" >
+        number_of_beds = #{numberOfBeds,jdbcType=INTEGER},
+      </if>
+      <if test="caseNumber != null" >
+        case_number = #{caseNumber,jdbcType=INTEGER},
+      </if>
+      <if test="caseDistribution != null" >
+        case_distribution = #{caseDistribution,jdbcType=VARCHAR},
+      </if>
+      <if test="geneDetectionRatio != null" >
+        gene_detection_ratio = #{geneDetectionRatio,jdbcType=INTEGER},
+      </if>
+      <if test="officeTelephone != null" >
+        office_telephone = #{officeTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorDetails != null" >
+        doctor_details = #{doctorDetails,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>
